@@ -1,0 +1,102 @@
+syntax = "proto3";
+package kratos.api;
+
+import "google/protobuf/duration.proto";
+
+option go_package = "ManusGo/internal/conf;conf";
+
+message Bootstrap {
+  Server server = 1;
+  Data data = 2;
+  LLMConfig llm = 3;
+  BrowserConfig browser = 4;
+  SearchConfig search = 5;
+  SandboxConfig sandbox = 6;
+  MCPConfig mcp = 7;
+}
+
+message Server {
+  message HTTP {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  message GRPC {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  HTTP http = 1;
+  GRPC grpc = 2;
+}
+
+message Data {
+  message Database {
+    string driver = 1;
+    string source = 2;
+  }
+  message Redis {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration read_timeout = 3;
+    google.protobuf.Duration write_timeout = 4;
+  }
+  Database database = 1;
+  Redis redis = 2;
+}
+
+message LLMSettings {
+  string model = 1;
+  string base_url = 2;
+  string api_key = 3;
+  int32 max_tokens = 4;
+  optional int32 max_input_tokens = 5;
+  float temperature = 6;
+  string api_type = 7;
+  string api_version = 8;
+}
+
+message LLMConfig {
+  LLMSettings default = 1;
+  LLMSettings vision = 2;
+}
+
+message ProxySettings {
+  string server = 1;
+  optional string username = 2;
+  optional string password = 3;
+}
+
+message BrowserConfig {
+  bool headless = 1;
+  bool disable_security = 2;
+  repeated string extra_chromium_args = 3;
+  optional string chrome_instance_path = 4;
+  optional string wss_url = 5;
+  optional string cdp_url = 6;
+  optional ProxySettings proxy = 7;
+  int32 max_content_length = 8;
+}
+
+message SearchConfig {
+  string engine = 1;
+  repeated string fallback_engines = 2;
+  int32 retry_delay = 3;
+  int32 max_retries = 4;
+  string lang = 5;
+  string country = 6;
+}
+
+message SandboxConfig {
+  bool use_sandbox = 1;
+  string image = 2;
+  string work_dir = 3;
+  string memory_limit = 4;
+  float cpu_limit = 5;
+  int32 timeout = 6;
+  bool network_enabled = 7;
+}
+
+message MCPConfig {
+  string server_reference = 1;
+}
